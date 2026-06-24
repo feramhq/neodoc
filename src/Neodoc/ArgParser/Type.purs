@@ -46,7 +46,7 @@ module Neodoc.ArgParser.Type (
 ) where
 
 import Prelude
-import Debug.Trace
+import Debug
 import Data.Optimize.Uncurried
 import Neodoc.Data.Layout
 import Neodoc.Data.SolvedLayout
@@ -61,7 +61,7 @@ import Neodoc.ArgParser.Lexer as L
 import Neodoc.ArgParser.Token as Token
 import Control.Alt ((<|>))
 import Control.Lazy (class Lazy)
-import Control.MonadPlus (class MonadPlus, class MonadZero, class Alternative)
+import Control.MonadPlus (class MonadPlus, class Alternative)
 import Control.Plus (class Plus, class Alt)
 import Data.Bifunctor (rmap)
 import Data.Either (Either(..), either)

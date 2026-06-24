@@ -1,8 +1,3 @@
-/* global exports */
-"use strict";
-
 // module Data.String.Ext
 
-exports.concatImpl = function(s1, s2) {
-  return s1 + s2;
-}
+export const concatImpl = (s1, s2) => s1 + s2

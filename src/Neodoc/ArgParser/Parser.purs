@@ -1,15 +1,16 @@
 module Neodoc.ArgParser.Parser where
 
 import Prelude
-import Debug.Trace hiding (trace)
-import Debug.Trace (trace) as Debug
+import Debug hiding (trace)
+import Debug (trace) as Debug
 import Debug.Profile
 import Data.Generic.Rep
 import Data.Newtype (unwrap)
 import Data.List (
   List(..), some, singleton, filter, fromFoldable, last, groupBy, sortBy, (:)
-, null, concat, mapWithIndex, length, take, drop, toUnfoldable, catMaybes, nub
+, null, concat, length, take, drop, toUnfoldable, catMaybes, nubEq
 , reverse)
+import Data.FunctorWithIndex (mapWithIndex)
 import Data.Array as Array
 import Data.Optimize.Uncurried
 import Data.List.Partial as LU
@@ -344,7 +345,7 @@ solve (Args4 l repOpts sub req) = skipIf hasTerminated Nil
       Just kvs@(_:_) -> do
         -- trace l' \i-> "solve: matched on argv: " <> pretty kvs <> ", i = " <> pretty i
         let rRep = _toElem <$> filter (_isRepeatable) (fst <$> kvs)
-            rep' = nub ((maybe Nil singleton mNewRep) <> rep <> rRep)
+            rep' = nubEq ((maybe Nil singleton mNewRep) <> rep <> rRep)
         go (Args6 (l' + 1) sub' req' rep' true (out <> unknowns <> kvs))
       _ -> do
         -- 2. if we did not manage to make a single `req` parse, we ought to try
@@ -373,7 +374,7 @@ solve (Args4 l repOpts sub req) = skipIf hasTerminated Nil
           Just kvs@(_:_) -> do
             -- trace l' \i-> "solve: matched via rep: " <> pretty kvs <> ", i = " <> pretty i
             let rRep = _toElem <$> filter (_isRepeatable) (fst <$> kvs)
-                rep'' = nub ((maybe Nil singleton mNewRep') <> rep' <> rRep)
+                rep'' = nubEq ((maybe Nil singleton mNewRep') <> rep' <> rRep)
             if any (isFrom Origin.Argv <<< snd) kvs
               then go (Args6 (l' + 1) sub' req rep'' true (out <> unknowns <> kvs))
               else go (Args6 (l' + 1) sub' req rep'' false (out <> unknowns <> kvs))

@@ -3,7 +3,7 @@
 module Neodoc.Spec.Parser.Usage where
 
 import Prelude
-import Debug.Trace
+import Debug
 import Debug.Profile
 import Data.Pretty
 import Data.Bifunctor (lmap)

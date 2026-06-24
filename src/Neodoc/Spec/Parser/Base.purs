@@ -8,16 +8,15 @@ import Prelude
 import Control.Alt ((<|>))
 import Data.List (List(), many)
 import Data.Tuple.Nested ((/\))
-import Text.Parsing.Parser (ParserT(..), ParseState(..)) as P
-import Text.Parsing.Parser.Pos (Position(..)) as P
-import Text.Parsing.Parser.String (satisfy, char, string) as P
+import Parsing (ParserT, ParseState(..), Position(..), stateParserT) as P
+import Parsing.String (satisfy, char, string) as P
 import Data.Array as A
 import Data.Char (toCharCode)
-import Data.Char.Unicode (toLower, toUpper)
+import Neodoc.Char (toLower, toUpper)
 import Data.String.CodeUnits (toCharArray, fromCharArray)
 import Data.Maybe (Maybe(Nothing, Just))
 import Data.Either (Either(Right))
-import Debug.Trace (trace)
+import Debug (trace)
 import Control.MonadPlus (guard)
 import Control.Monad.Except (ExceptT(..), throwError)
 import Control.Monad.State (StateT(..))
@@ -54,8 +53,7 @@ debug x = trace x $ const $ pure unit
 
 -- | Return the current parser position
 getInput :: ∀ i m. (Monad m) => P.ParserT i m i
-getInput = (P.ParserT <<< ExceptT <<< StateT) \(s@(P.ParseState i pos _)) ->
-  pure $ Right i /\ (P.ParseState i pos false)
+getInput = P.stateParserT \state@(P.ParseState i _ _) -> i /\ state
 
 -- setInput :: ∀ i m. (Monad m) => i -> P.ParserT i m Unit
 -- setInput i = (P.ParserT <<< ExceptT <<< StateT) \(s@(P.ParseState _ pos _)) ->

@@ -2,7 +2,7 @@ module Neodoc.ArgParser.Token where
 
 import Prelude
 import Data.Generic.Rep
-import Data.Generic.Rep.Show (genericShow)
+import Data.Show.Generic (genericShow)
 import Data.Function (on)
 import Data.Pretty (class Pretty, pretty)
 import Data.Tuple.Nested ((/\))

@@ -5,7 +5,7 @@ import Prelude
 import Data.Maybe
 import Data.Function (on)
 import Data.Generic.Rep
-import Data.Generic.Rep.Show (genericShow)
+import Data.Show.Generic (genericShow)
 import Data.Foldable (all)
 import Data.Pretty
 

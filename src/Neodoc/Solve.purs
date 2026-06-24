@@ -1,7 +1,7 @@
 module Neodoc.Solve where
 
 import Prelude
-import Debug.Trace
+import Debug
 import Debug.Profile
 import Neodoc.Spec
 import Neodoc.Data.UsageLayout

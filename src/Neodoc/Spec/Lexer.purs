@@ -3,7 +3,7 @@ module Neodoc.Spec.Lexer where
 import Prelude
 import Data.Array as A
 import Debug.Profile
-import Debug.Trace
+import Debug
 import Data.Pretty
 import Data.Bifunctor (lmap)
 import Data.NonEmpty (NonEmpty, (:|))
@@ -17,7 +17,8 @@ import Control.Alt ((<|>))
 import Control.Apply ((*>), (<*))
 import Control.Lazy (defer)
 import Control.MonadPlus (guard)
-import Data.Either (Either(..), fromRight)
+import Data.Either (Either(..))
+import Neodoc.Unsafe (unsafeFromRight)
 import Data.Identity (Identity())
 import Data.Foldable (foldMap)
 import Control.Monad.State (StateT(..), State(..), evalState)
@@ -63,7 +64,7 @@ skipSpaces = (do
 -- | this saves us looking ahead repeatedly when parsing '['.
 referenceRegex :: Regex
 referenceRegex
-  = unsafePartial $ fromRight $
+  = unsafeFromRight $
       regex
         "\\[(([^\\]](?!\\s*-?\\s*options\\s*))*?.?)\\s*-?\\s*options\\s*(\\.\\.\\.)?\\s*\\]"
         (Regex.parseFlags "gmi")
@@ -145,7 +146,7 @@ parseDescriptionToken = defer \_-> P.choice [
 
 maybeShoutNameRegex :: Regex
 maybeShoutNameRegex
-  = unsafePartial $ fromRight $
+  = unsafeFromRight $
       regex "[a-zA-Z]" (Regex.parseFlags "gi")
 
 maybeShoutName :: StringParser' Token

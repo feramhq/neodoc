@@ -5,7 +5,7 @@ import Control.Alt ((<|>))
 import Data.String as S
 import Data.String.CodeUnits
 import Data.Char as C
-import Data.Char.Unicode as C
+import Neodoc.Char as C
 import Data.List (List, many)
 import Data.Array as A
 import Data.Newtype (wrap)

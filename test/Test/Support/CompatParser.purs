@@ -26,14 +26,16 @@ import Data.String.Argv as Argv
 import Data.String.CodeUnits (fromCharArray)
 import Data.Tuple (Tuple(..))
 import Effect (Effect())
-import Global (readFloat)
+import Neodoc.Number (readFloat)
 import Node.Encoding (Encoding(UTF8))
 import Node.FS.Sync (readTextFile)
-import Text.Parsing.Parser (fail, runParserT) as P
-import Text.Parsing.Parser.Combinators
+import Parsing (fail, runParserT) as P
+import Parsing.Combinators
   (between, choice, manyTill, option, optional, sepBy, try) as P
-import Text.Parsing.Parser.String
-  (anyChar, char, eof, noneOf, skipSpaces, string) as P
+import Parsing.String
+  (anyChar, char, eof, string) as P
+import Parsing.String.Basic
+  (noneOf, skipSpaces) as P
 import Test.Support (runEitherEff)
 
 import Neodoc.Options

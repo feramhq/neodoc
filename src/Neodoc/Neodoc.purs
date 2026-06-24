@@ -12,14 +12,16 @@ module Neodoc
 where
 
 import Prelude
-  (class Ord, class Show, bind, not, pure, show, ($), (<$>), (<>), (>))
+  (class Ord, class Show, bind, const, not, pure, show, ($), (<$>), (<>), (>))
 
 import Data.Argonaut.Core
-  (Json, jsonNull, jsonSingletonArray, jsonSingletonObject)
+  (Json, jsonNull, jsonSingletonObject)
 import Data.Argonaut.Decode (decodeJson)
+import Data.Argonaut.Decode.Error (printJsonDecodeError)
 import Data.Argonaut.Encode (encodeJson)
 import Data.Array as A
-import Data.Either (Either(..), either, fromRight)
+import Data.Either (Either(..), either)
+import Neodoc.Unsafe (unsafeFromRight)
 import Data.Foldable (class Foldable, any, intercalate)
 import Data.List (concat, fromFoldable)
 import Data.Map (Map)
@@ -27,9 +29,10 @@ import Data.Map as Map
 import Data.Maybe (Maybe(..), maybe, fromMaybe)
 import Data.Pretty (class Pretty, pretty)
 import Data.String as String
+import Data.String (Pattern(..))
+import Data.String.Common (joinWith, split)
 import Data.String.Regex (regex)
 import Data.String.Regex as Regex
-import Data.String.Yarn (lines, unlines)
 import Data.Traversable (for)
 import Effect (Effect)
 import Partial.Unsafe (unsafePartial)
@@ -99,28 +102,26 @@ instance showOutput :: Show Output where
 
 runStringJs :: String -> Json -> Json
 runStringJs helpStr opts =
-  let
-    jsonResult = do
-      NeodocOptions neodocOptsObj <- decodeJson opts
-
-      let outputResult = runString
-            helpStr
-            (NeodocOptions neodocOptsObj)
-            neodocOptsObj.version
-
-      case outputResult of
-        Left neodocError -> Right $ encodeJson neodocError
-        Right val -> Right $ encodeJson $ case val of
+  case decodeJson opts of
+    Left err ->
+      jsonSingletonObject "error" $ encodeJson (printJsonDecodeError err)
+    Right (NeodocOptions neodocOptsObj) ->
+      case runString helpStr (NeodocOptions neodocOptsObj) neodocOptsObj.version of
+        Left neodocError ->
+          let
+            mSpec     = either (const Nothing) Just (parseHelpText helpStr)
+            mProgram  = (\(Spec s) -> s.program)   <$> mSpec
+            mShort    = (\(Spec s) -> s.shortHelp) <$> mSpec
+            helpFlags = pretty <$> neodocOptsObj.helpFlags
+            rendered  = renderNeodocError mProgram (Just helpFlags) mShort neodocError
+          in
+            jsonSingletonObject "error" $ encodeJson rendered
+        Right val -> encodeJson $ case val of
           (Output x) -> argKeyMapToString x
           (HelpOutput x s) ->
             Map.insert ".help" (StringValue s) (argKeyMapToString x)
           (VersionOutput x s) ->
             Map.insert ".version" (StringValue s) (argKeyMapToString x)
-  in
-    case jsonResult of
-      Left err -> jsonSingletonObject "errors" $
-        jsonSingletonArray $ encodeJson err
-      Right val -> val
 
 
 runSpecJs :: Json -> Json -> Json
@@ -238,7 +239,7 @@ renderNeodocError (Just prog) mHelpFlags mShortHelp (Error.ArgParserError msg) =
         <> help
   where
   renderShortHelp (Just help) =
-    dedent $ unlines $ ("  " <> _) <$> lines (dedent help)
+    dedent $ joinWith "\n" $ ("  " <> _) <$> split (Pattern "\n") (dedent help)
   renderShortHelp _ = ""
   renderHelpFlags prog_ (Just flags) | not (A.null flags) =
     "See " <> prog_ <> " " <> (intercalate "/" flags)
@@ -261,7 +262,7 @@ has x =
 trimHelp :: String -> String
 trimHelp =
   let
-    regex' a b = unsafePartial $ fromRight $ regex a (Regex.parseFlags b)
+    regex' a b = unsafeFromRight $ regex a (Regex.parseFlags b)
   in
     Regex.replace
       (regex' "(^\\s*(\r\n|\n|\r))|((\r\n|\n|\r)\\s*$)" "g")

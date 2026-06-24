@@ -5,7 +5,7 @@ import Data.Pretty
 import Data.Bifunctor (rmap)
 import Data.Optimize.Uncurried
 import Control.Lazy (class Lazy)
-import Control.MonadPlus (class MonadPlus, class MonadZero, class Alternative)
+import Control.MonadPlus (class MonadPlus, class Alternative)
 import Control.Plus (class Plus, class Alt)
 import Data.Either (Either(..), either)
 
@@ -135,8 +135,6 @@ instance alternativeParser :: Alternative (Parser e c s g i)
 
 instance lazyParser :: Lazy (Parser e c s g i a) where
   defer f = Parser \args -> unParser (f unit) args
-
-instance monadZeroParser :: MonadZero (Parser e c s g i)
 
 runParser :: ∀ e c s g i a. Args5 c s g i (Parser e c s g i a) -> Either (ParseError e) a
 runParser (Args5 c s g i p) = case unParser p (ParseArgs c s g i) of (Step _ _ r) -> r

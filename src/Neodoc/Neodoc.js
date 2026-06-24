@@ -1,43 +1,27 @@
-var fs = require('fs')
-var path = require('path')
+// module Neodoc
 
-function NeodocError(message, payload) {
-  this.message = message
-  this.payload = payload
-  Error.call(this)
-}
-
-NeodocError.prototype.name = 'NeodocError'
-NeodocError.prototype = Object.create(Error)
-
+import fs from 'fs'
+import path from 'path'
 
 /**
  * Try and detect the version as indicated in the package.json neighbouring
- * the main module. Uses `require.main` to detect the main module and traverses
- * the parent directories in a search for a `package.json` using
- * `require.main.paths`.
+ * the main module. Walks up the parent directories from the entry script in
+ * search of a `package.json`.
  */
-
-exports.readPkgVersionImpl = function (Just) {
-  return function(Nothing) {
-    return function() {
-      if (!require.main) {
-        return Nothing
+export const readPkgVersionImpl = (Just) => (Nothing) => () => {
+  try {
+    let dir = path.dirname(process.argv[1] || process.cwd())
+    for (let i = 0; i < 50; i++) {
+      const p = path.join(dir, 'package.json')
+      if (fs.existsSync(p)) {
+        return Just(JSON.parse(fs.readFileSync(p, 'utf8')).version)
       }
-      else if (require.main && require.main.paths /* in node? */){
-        for (var i=0; i < require.main.paths.length; i++) {
-          var xs = require.main.paths[i].split(path.sep)
-          if (xs.pop() === 'node_modules' && xs.length > 1) {
-            xs.push('package.json')
-            var p = xs.join(path.sep)
-            if (fs.existsSync(p)) {
-              return Just(JSON.parse(fs.readFileSync(p)).version)
-            }
-          }
-        }
-        return Nothing
-      }
-      return Nothing
+      const parent = path.dirname(dir)
+      if (parent === dir) break
+      dir = parent
     }
+    return Nothing
+  } catch (e) {
+    return Nothing
   }
 }

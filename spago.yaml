@@ -1,0 +1,54 @@
+package:
+  name: neodoc
+  dependencies:
+    - aff
+    - argonaut-codecs
+    - argonaut-core
+    - argonaut-generic
+    - arrays
+    - bifunctors
+    - console
+    - control
+    - datetime
+    - debug
+    - effect
+    - either
+    - exceptions
+    - foldable-traversable
+    - foreign
+    - free
+    - integers
+    - lists
+    - maybe
+    - newtype
+    - node-fs
+    - node-process
+    - nonempty
+    - numbers
+    - ordered-collections
+    - parsing
+    - partial
+    - prelude
+    - strings
+    - tailrec
+    - transformers
+    - tuples
+    - unicode
+    - unsafe-coerce
+  test:
+    main: Test.Main
+    dependencies:
+      - assert
+      - foldable-traversable
+      - foreign-object
+      - parsing
+      - spec
+  bundle:
+    module: Neodoc
+    outfile: lib.js
+    type: module
+    platform: node
+workspace:
+  packageSet:
+    registry: 77.8.0
+  extraPackages: {}

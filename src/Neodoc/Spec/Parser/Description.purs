@@ -2,7 +2,7 @@ module Neodoc.Spec.Parser.Description where
 
 import Prelude
 import Debug.Profile
-import Debug.Trace
+import Debug
 import Data.Pretty
 import Data.Bifunctor (lmap)
 import Data.Tuple.Nested ((/\))
@@ -34,8 +34,8 @@ import Neodoc.Spec.Parser.Combinators as P
 import Data.Either (Either(..), either)
 import Data.Maybe (Maybe(Nothing, Just), isJust, isNothing, maybe, fromMaybe)
 import Data.Generic.Rep (class Generic)
-import Data.Generic.Rep.Show (genericShow)
-import Data.Generic.Rep.Eq (genericEq)
+import Data.Show.Generic (genericShow)
+import Data.Eq.Generic (genericEq)
 import Data.Array as A
 import Data.String.Ext ((^=))
 import Data.Pretty (class Pretty, pretty)

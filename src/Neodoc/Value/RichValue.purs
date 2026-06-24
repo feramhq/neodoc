@@ -11,7 +11,7 @@ module Neodoc.Value.RichValue (
 
 import Prelude
 import Data.Generic.Rep
-import Data.Generic.Rep.Show (genericShow)
+import Data.Show.Generic (genericShow)
 import Data.Pretty (class Pretty, pretty)
 import Neodoc.Value (Value, prettyPrintValue)
 import Neodoc.Value.Origin (Origin)

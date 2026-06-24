@@ -17,7 +17,7 @@ where
 -- import Data.Traversable (for)
 -- import Data.Tuple (Tuple(..), fst, snd)
 -- import Debug.Profile
--- import Debug.Trace
+-- import Debug
 -- import Effect.Exception (error, throwException)
 -- import Partial.Unsafe (unsafePartial)
 -- import Test.Spec (Spec()) as Test

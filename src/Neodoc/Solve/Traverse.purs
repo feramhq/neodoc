@@ -1,7 +1,7 @@
 module Neodoc.Solve.Traverse where
 
 import Prelude
-import Debug.Trace
+import Debug
 import Data.Bifunctor (lmap)
 import Data.Tuple (Tuple)
 import Data.Tuple.Nested ((/\))

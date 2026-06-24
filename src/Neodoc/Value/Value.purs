@@ -37,7 +37,7 @@ import Data.String (toUpper, trim) as String
 import Data.String.CodeUnits (singleton) as String
 import Data.Traversable (for)
 import Data.Tuple.Nested ((/\))
-import Global (isFinite, readFloat, readInt)
+import Neodoc.Number (isFinite, readFloat, readInt)
 
 import Neodoc.Parsing.Parser (extractError, fail, runParser) as P
 import Neodoc.Parsing.Parser.Combinators (between, choice, many, option, sepBy1, some, try) as P
@@ -64,7 +64,11 @@ instance showValue :: Show Value where
   show (FloatValue  number) = show number
 
 instance encodeJsonValue :: EncodeJson Value where
-  encodeJson value = encodeJson (show value)
+  encodeJson (StringValue string)  = encodeJson string
+  encodeJson (BoolValue   boolean) = encodeJson boolean
+  encodeJson (ArrayValue  array)   = encodeJson array
+  encodeJson (IntValue    int)     = encodeJson int
+  encodeJson (FloatValue  number)  = encodeJson number
 
 
 -- instance isForeignValue :: IsForeign Value where

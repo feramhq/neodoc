@@ -1,7 +1,7 @@
 module Test.Spec.SolveSpec (solveSpec) where
 
 import Prelude
-import Debug.Trace
+import Debug
 import Data.Either (Either(..), either, fromRight)
 import Data.Pretty (pretty)
 import Data.Tuple.Nested ((/\))

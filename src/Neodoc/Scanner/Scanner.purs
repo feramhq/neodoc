@@ -10,9 +10,11 @@ import Data.String.Regex as Regex
 import Data.String.Regex.Flags as Regex
 import Data.String.Regex (regex, Regex())
 import Data.String (length, trim) as String
-import Data.String.Yarn (replicate) as String
+import Data.String.CodeUnits (fromCharArray) as String
+import Data.Array (replicate) as Array
 import Data.Maybe (Maybe(..), maybe)
-import Data.Either (Either(Left), fromRight)
+import Data.Either (Either(Left))
+import Neodoc.Unsafe (unsafeFromRight)
 import Partial.Unsafe (unsafePartial)
 import Data.String.Regex.AnsiRegex (regex) as AnsiRegex
 import Neodoc.Scanner.Error
@@ -42,7 +44,7 @@ scan text = lmap ScanError do
                        (Regex.match (section n) text)
 
 section :: String -> Regex
-section name = unsafePartial $ fromRight $
+section name = unsafeFromRight $
   regex ("^([^\n]*" <> name <> "[^\n]*:(?:.*$)\n?(?:(?:[ \t].*)?(?:\n|$))*)")
         (Regex.parseFlags "gmi")
 
@@ -50,10 +52,12 @@ fixSection :: String -> String
 fixSection = fixHeaders <<< removeEscapes
   where
     removeEscapes = to (Just ' ') AnsiRegex.regex
-    fixHeaders    = to (Just ' ') $ unsafePartial
-                                  $ fromRight
+    fixHeaders    = to (Just ' ') $ unsafeFromRight
                                   $ regex "(^[^:]+:)" Regex.noFlags
     to c = flip Regex.replace' $ \m _ ->
-              maybe "" (String.replicate (String.length m)) c
+              maybe "" (replicateChar (String.length m)) c
+
+replicateChar :: Int -> Char -> String
+replicateChar n c = String.fromCharArray (Array.replicate n c)
 
 

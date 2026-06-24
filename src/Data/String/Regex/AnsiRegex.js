@@ -1,8 +1,5 @@
-/* global exports */
-"use strict";
-
 // module Data.String.Regex.AnsiRegex
 
-exports.getRegex = function() {
-  return require('ansi-regex')();
-}
+import ansiRegex from 'ansi-regex'
+
+export const getRegex = () => ansiRegex()

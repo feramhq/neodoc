@@ -1,8 +1,8 @@
 module Neodoc.ArgKey where
 
-import Prelude (class Eq, class Ord, class Show, eq, map, show)
+import Prelude (class Eq, class Ord, class Show, eq, map)
 import Data.Generic.Rep (class Generic)
-import Data.Generic.Rep.Show (genericShow)
+import Data.Show.Generic (genericShow)
 import Data.Map as Map
 import Data.Pretty (class Pretty, pretty)
 import Data.String as String
@@ -43,7 +43,7 @@ instance prettyArgKey :: Pretty ArgKey where
 argKeyMapToString :: Map.Map ArgKey Value -> Map.Map String Value
 argKeyMapToString theMap =
   Map.fromFoldable (map
-    (\(Tuple key val) -> Tuple (show key) val)
+    (\(Tuple key val) -> Tuple (pretty key) val)
     (Map.toUnfoldable theMap) :: Array (Tuple String Value))
 
 

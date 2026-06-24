@@ -1,7 +1,7 @@
 module Neodoc.ArgParser.Debug where
 
 import Prelude
-import Debug.Trace hiding (trace)
+import Debug hiding (trace)
 import Data.String.CodeUnits (fromCharArray)
 import Data.Pretty
 import Data.List (List)

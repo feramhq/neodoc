@@ -7,7 +7,7 @@ import Prelude
 import Data.Pretty
 import Data.Function (on)
 import Data.Generic.Rep
-import Data.Generic.Rep.Show (genericShow)
+import Data.Show.Generic (genericShow)
 
 data Origin
   = Argv

@@ -1,7 +1,7 @@
 module Neodoc.ArgParser.Argument where
 
 import Prelude
-import Debug.Trace
+import Debug
 import Data.List.Partial as LU
 import Data.Tuple.Nested ((/\))
 import Data.Array as A
@@ -12,7 +12,8 @@ import Data.Either (Either(..))
 import Data.List (
   List(..), reverse, singleton, concat, length, (:)
 , some, filter, head, toUnfoldable, sortBy, groupBy, last, null
-, tail, many, mapWithIndex)
+, tail, many)
+import Data.FunctorWithIndex (mapWithIndex)
 import Data.Maybe (Maybe(..), maybe, fromMaybe, isNothing, isJust)
 import Data.String.Ext ((~~))
 import Data.String as String

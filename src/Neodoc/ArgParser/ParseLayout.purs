@@ -4,7 +4,7 @@ import Prelude
 import Data.NonEmpty (NonEmpty)
 import Data.Function (on)
 import Data.Generic.Rep
-import Data.Generic.Rep.Show (genericShow)
+import Data.Show.Generic (genericShow)
 import Data.Pretty
 import Data.List (List)
 import Data.Foldable (intercalate)

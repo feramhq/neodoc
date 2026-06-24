@@ -1,20 +1,12 @@
-/* global exports */
-"use strict";
-
 // module Debug.Profile
 
-var _timers = {};
+export const _ENABLE_PROFILING_ =
+  process.env['NEODOC_ENABLE_PROFILE'] == '1' ||
+  process.env['NEODOC_ENABLE_PROFILE'] == 'true'
 
-exports._ENABLE_PROFILING_ = process.env['NEODOC_ENABLE_PROFILE'] == '1' ||
-                              process.env['NEODOC_ENABLE_PROFILE'] == 'true';
+export const timerStart = () => process.hrtime()
 
-exports.timerStart = function () {
-  return process.hrtime();
-}
-
-exports.timerEnd = function (start) {
-  return function () {
-    var hrTime = process.hrtime(start);
-    return hrTime[0] * 1000 + hrTime[1] / 1000000
-  };
+export const timerEnd = (start) => () => {
+  const hrTime = process.hrtime(start)
+  return hrTime[0] * 1000 + hrTime[1] / 1000000
 }

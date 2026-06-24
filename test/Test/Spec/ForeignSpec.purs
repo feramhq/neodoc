@@ -20,7 +20,7 @@ where
 -- import Data.Pretty (pretty)
 -- import Data.String as String
 -- import Data.Tuple (Tuple(..), fst, snd)
--- import Debug.Trace
+-- import Debug
 -- import Effect (Effect())
 -- import Effect.Aff (Aff)
 -- import Effect.Class (liftEffect)

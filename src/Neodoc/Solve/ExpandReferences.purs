@@ -60,7 +60,7 @@ module Neodoc.Solve.ExpandReferences where
 
 import Prelude
 
-import Debug.Trace
+import Debug
 import Data.Either (Either(..))
 import Data.Maybe (Maybe(..), fromMaybe, maybe)
 import Data.Traversable (traverse, for)

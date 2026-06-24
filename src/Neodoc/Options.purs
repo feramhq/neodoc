@@ -1,10 +1,12 @@
 module Neodoc.Options where
 
-import Prelude (bind, ($), pure)
+import Prelude (bind, ($), (<<<), pure)
 
 import Data.Argonaut.Core (Json)
 import Data.Argonaut.Decode (class DecodeJson, decodeJson, (.:?), (.!=))
+import Data.Argonaut.Decode.Error (printJsonDecodeError)
 import Data.Argonaut.Encode (class EncodeJson, encodeJson)
+import Data.Bifunctor (lmap)
 import Data.Either (Either)
 import Data.Newtype
 import Data.Maybe (Maybe(..))
@@ -123,4 +125,4 @@ optionsToJson = encodeJson
 
 
 optionsFromJson :: Json -> Either String NeodocOptions
-optionsFromJson = decodeJson
+optionsFromJson = lmap printJsonDecodeError <<< decodeJson

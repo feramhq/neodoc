@@ -1,14 +1,8 @@
-/* global exports */
-"use strict";
-
 // module Data.Foreign.Extra
 
-exports._isTruthy = function (value) {
-  return !!value;
-};
+export const _isTruthy = (value) => !!value
 
-exports.undefined = undefined;
+const undefinedValue = undefined
+export { undefinedValue as undefined }
 
-exports.toString = function(value) {
-  return value.toString();
-};
+export const toString = (value) => value.toString()

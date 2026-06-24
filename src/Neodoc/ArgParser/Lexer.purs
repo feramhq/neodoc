@@ -4,7 +4,7 @@ module Neodoc.ArgParser.Lexer (
 ) where
 
 import Prelude
-import Debug.Trace
+import Debug
 import Data.Either (Either(..))
 import Data.Maybe (Maybe(..))
 import Data.Bifunctor (lmap)

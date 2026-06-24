@@ -1,7 +1,7 @@
 module Debug.Profile where
 
 import Prelude
-import Debug.Trace
+import Debug
 import Data.Either
 import Data.Tuple.Nested
 import Data.Newtype (unwrap)

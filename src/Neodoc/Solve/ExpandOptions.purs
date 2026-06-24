@@ -12,7 +12,7 @@ module Neodoc.Solve.ExpandOptions (
 
 import Data.Optimize.Uncurried
 import Prelude
-import Debug.Trace
+import Debug
 import Debug.Profile
 import Data.Tuple.Nested ((/\))
 import Data.List (
@@ -22,7 +22,7 @@ import Control.Alt ((<|>))
 import Control.Bind (join)
 import Control.Plus (empty)
 import Data.Generic.Rep
-import Data.Generic.Rep.Show (genericShow)
+import Data.Show.Generic (genericShow)
 import Data.Array as Array
 import Data.Pretty (class Pretty, pretty)
 import Data.Function (on)

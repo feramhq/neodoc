@@ -1,7 +1,7 @@
 module Test.Spec.UsageParserSpec (usageParserSpec) where
 
 import Prelude
-import Debug.Trace
+import Debug
 import Control.Monad (when)
 import Data.NonEmpty (NonEmpty, (:|))
 import Data.Pretty (class Pretty)

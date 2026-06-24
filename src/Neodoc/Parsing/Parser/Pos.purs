@@ -3,7 +3,7 @@ module Neodoc.Parsing.Parser.Pos where
 import Prelude
 import Debug.Profile
 import Data.Generic.Rep
-import Data.Generic.Rep.Show (genericShow)
+import Data.Show.Generic (genericShow)
 import Data.Foldable (foldl)
 import Data.String as S
 import Data.Newtype (wrap)

@@ -13,9 +13,11 @@ import Prelude
 
 import Data.Argonaut.Encode (class EncodeJson, encodeJson)
 import Data.Argonaut.Decode (class DecodeJson, decodeJson)
+import Data.Argonaut.Decode.Error (JsonDecodeError(..))
+import Data.Bifunctor (lmap)
 import Data.Either (Either(..), note)
 import Data.Generic.Rep (class Generic)
-import Data.Generic.Rep.Show (genericShow)
+import Data.Show.Generic (genericShow)
 import Data.List (List, (:))
 import Data.Maybe (Maybe(..))
 import Data.NonEmpty (NonEmpty, fromNonEmpty)
@@ -41,7 +43,7 @@ instance encodeJsonOptionAlias :: EncodeJson OptionAlias where
   encodeJson option = encodeJson (toString option)
 
 instance decodeJsonOptionAlias :: DecodeJson OptionAlias where
-  decodeJson json = decodeJson json >>= fromString
+  decodeJson json = decodeJson json >>= (lmap TypeMismatch <<< fromString)
 
 
 toString :: OptionAlias -> String

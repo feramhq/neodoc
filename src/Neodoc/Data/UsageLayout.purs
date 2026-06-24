@@ -2,7 +2,7 @@ module Neodoc.Data.UsageLayout where
 
 import Prelude
 import Data.Generic.Rep
-import Data.Generic.Rep.Show (genericShow)
+import Data.Show.Generic (genericShow)
 import Data.String as String
 import Data.Bifunctor (lmap)
 import Data.Pretty (class Pretty, pretty)

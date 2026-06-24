@@ -17,14 +17,14 @@
   },
   "scripts": {
     "build": "npm run bundle && npm run minify",
-    "bundle": "spago bundle-module --main Neodoc --to lib.js",
+    "bundle": "spago build && esbuild output/Neodoc/index.js --bundle --format=cjs --platform=node --outfile=lib.js",
     "clean": "git stash && git clean -fdX",
     "deps": "spago install",
-    "examples": "spago run --main=Example.String && spago run --main=Example.Spec",
-    "minify": "uglifyjs --compress --mangle --output=lib.js lib.js",
+    "examples": "spago run --main Example.String && spago run --main Example.Spec",
+    "minify": "esbuild lib.js --minify --allow-overwrite --outfile=lib.js",
     "prepublishOnly": "npm test && npm run build",
     "prof": "npm run build && ./scripts/prof",
-    "test": "spago test && npm run test-js && npm run examples",
+    "test": "spago test && npm run bundle && npm run test-js && npm run examples",
     "test-js": "mocha test-js/test.js",
     "watch": "spago run --watch"
   },
@@ -52,11 +52,12 @@
   "devDependencies": {
     "chai": "^3.5.0",
     "chalk": "^1.1.3",
+    "esbuild": "^0.28.1",
     "js-schema": "^1.0.1",
     "lodash": "^4.12.0",
     "mocha": "^2.4.5",
     "shelljs": "^0.8.3",
-    "spago": "^0.13.1",
+    "spago": "^1.0.4",
     "string-argv": "0.0.2",
     "uglify-js": "^3.7.6"
   },

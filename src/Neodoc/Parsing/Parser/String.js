@@ -1,12 +1,5 @@
-/* global exports */
-"use strict";
-
 // module Neodoc.Parsing.Parser.String
 
-exports.getFirst = function(s) {
-  return s.slice(0, 1);
-}
+export const getFirst = (s) => s.slice(0, 1)
 
-exports.getRest = function(s) {
-  return s.slice(1);
-}
+export const getRest = (s) => s.slice(1)

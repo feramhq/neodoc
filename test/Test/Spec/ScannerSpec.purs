@@ -1,7 +1,7 @@
 module Test.Spec.ScannerSpec (scannerSpec) where
 
 import Prelude
-import Debug.Trace
+import Debug
 import Effect.Aff
 import Effect (Effect())
 import Effect.Class (liftEffect)
@@ -9,19 +9,21 @@ import Effect.Exception (error, throwException)
 import Data.Bifunctor (lmap)
 import Data.List (List(..), length, (!!), take)
 import Data.Pretty (pretty)
-import Data.TemplateString.Unsafe ((<~>))
+import Test.Support.Template ((<~>))
 import Data.Either (Either(..), isRight, isLeft, either, fromRight)
 import Data.Either (fromRight)
 import Data.Maybe (Maybe(..), fromJust)
 import Data.String.Chalk as Chalk
 import Data.String.Ext as String
-import Data.String.Yarn (replicate) as String
+import Data.Array (replicate) as Array
+import Data.String.CodeUnits (fromCharArray) as SCU
 import Data.String.Regex as Regex
 import Data.String.Regex (regex, Regex())
 import Data.String as String
 import Partial.Unsafe (unsafePartial)
 
 import Neodoc.Scanner as Scanner
+import Neodoc.Unsafe (unsafeFromRight)
 import Text.Wrap (dedent)
 
 import Test.Assert (assert)
@@ -136,11 +138,11 @@ shouldEqS a = shouldEq a
   where
     placeHoldersToUnderscores = Regex.replace'
       (regex' "%[^%]+%" "g")
-      (\m _ -> String.replicate (String.length m - 2) '_')
+      (\m _ -> SCU.fromCharArray (Array.replicate (String.length m - 2) '_'))
     replaceUnderScores    = Regex.replace (regex' "_" "g") " "
     addTrailingNewline s  = if String.endsWith "\n" s then s else s <> "\n"
     stripInitialNewline s = if String.startsWith "\n" s then String.drop 1 s else s
-    regex' a b = unsafePartial $ fromRight $ regex a (Regex.parseFlags b)
+    regex' a b = unsafeFromRight $ regex a (Regex.parseFlags b)
 
 fromJust' :: ∀ a. Maybe a -> a
 fromJust' ma = unsafePartial $ fromJust ma

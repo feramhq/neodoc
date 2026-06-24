@@ -15,7 +15,7 @@ import Data.Map as Map
 import Data.Maybe (Maybe(..), fromMaybe)
 import Data.Pretty (pretty)
 import Data.String.Chalk as Chalk
-import Data.TemplateString.Unsafe ((<~>))
+import Test.Support.Template ((<~>))
 import Data.Traversable (for)
 import Data.Tuple (Tuple(..))
 import Effect (Effect())

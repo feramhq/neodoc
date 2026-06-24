@@ -1,3 +1,5 @@
-const chalk = require('chalk')
+// module Data.String.Chalk
 
-exports.blue = chalk.blue
+import chalk from 'chalk'
+
+export const blue = chalk.blue

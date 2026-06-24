@@ -22,7 +22,7 @@ import Data.Array as A
 import Data.Bifunctor (rmap, lmap)
 import Data.Foldable (all, foldl, maximum)
 import Data.Function (flip)
-import Data.List (List(..), catMaybes, concat, filter, nub, reverse, singleton)
+import Data.List (List(..), catMaybes, concat, filter, nubEq, reverse, singleton)
 import Data.Map (Map, toUnfoldable)
 import Data.Map as Map
 import Data.Maybe (Maybe(..), fromJust, fromMaybe)
@@ -86,7 +86,7 @@ fillValues target input =
       let vs' = filter (origin (/=) Origin.Empty) vs
           vs'' = filter (origin (/=) Origin.Default) vs'
           vs''' = case vs'' of
-                      Nil -> nub vs'
+                      Nil -> nubEq vs'
                       vs  -> vs
           vs'''' = vs''' <#> \(RichValue v) -> RichValue $ v {
                     value = if isRepeatable a
