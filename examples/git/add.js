@@ -1,8 +1,7 @@
-require('shelljs/global');
+const neodoc = require('../..')
 
-module.exports = (argv) => {
-const args = require('../..').run(`
-usage: git add [options] [--] <pathspec>...
+const helpText =
+`usage: git add [options] [--] <pathspec>...
 
 Options:
   -n, --dry-run         dry run
@@ -19,7 +18,13 @@ Options:
   --refresh             don't add, only refresh the index
   --ignore-errors       just skip files which cannot be added because of errors
   --ignore-missing      check if - even missing - files are ignored in dry run
-`, { argv: argv, smartOptions: true });
+`
 
-echo(JSON.stringify(args));
+module.exports = (argv) => {
+  const args = neodoc.run(helpText, {
+    argv: argv,
+    smartOptions: true,
+  })
+
+  console.log(JSON.stringify(args))
 }

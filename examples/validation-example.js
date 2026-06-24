@@ -1,31 +1,36 @@
-require('shelljs/global');
-const _ = require('lodash');
-const Schema = require('js-schema');
-const File = require('./schema-extensions/File');
-const Dir = require('./schema-extensions/Dir');
+const Schema = require('js-schema')
+const File = require('./schema-extensions/File')
+const Dir = require('./schema-extensions/Dir')
+const neodoc = require('../index.js')
 
-const args = require('..').run(`
-  Usage: prog.js [--count=N] PATH FILE...
+const helpText =
+`Usage: prog.js [--count=N] PATH FILE...
 
-  Arguments:
-    FILE          input file
-    PATH          out directory
+Arguments:
+  FILE          input file
+  PATH          out directory
 
-  Options:
-    --count=N     number of operations
-`);
+Options:
+  --count=N     number of operations
+`
 
-const errors = Schema({
-  FILE:       File.exists()
-, PATH:       Dir.exists()
-, '?--count': Number.min(0).max(5)
-}).errors(args);
+const args = neodoc.run(helpText)
 
-if (errors) {
-  _.each(errors, (error, arg) => {
-    echo(`Invalid ${arg} argument: ${error}`);
-  })
-  exit(1)
-}
+console.dir(args)
 
-echo(args);
+// const errors =
+//   Schema({
+//     FILE: File.exists(),
+//     PATH: Dir.exists(),
+//     '?--count': Number.min(0).max(5),
+//   })
+//   .errors(args)
+
+// if (errors) {
+//   errors.forEach((error, arg) => {
+//     echo(`Invalid ${arg} argument: ${error}`)
+//   })
+//   exit(1)
+// }
+
+// echo(args)

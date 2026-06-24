@@ -7,7 +7,6 @@ const File = module.exports = new BaseSchema.extend({
     return _.every(i, fs.existsSync);
   }
 , errors: function(i)  {
-    const msg;
     const is = _.isArray(i) ? i : [ i ];
     const missing = _.filter(is, f => !fs.existsSync(f));
     if (missing.length > 0) {
