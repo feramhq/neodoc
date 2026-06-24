@@ -12,7 +12,7 @@ module Neodoc
 where
 
 import Prelude
-  (class Ord, class Show, bind, const, not, pure, show, ($), (<$>), (<>), (>))
+  (class Ord, class Show, bind, const, not, pure, show, ($), (<$>), (<<<), (<>), (>))
 
 import Data.Argonaut.Core
   (Json, jsonNull, jsonSingletonObject)
@@ -20,10 +20,11 @@ import Data.Argonaut.Decode (decodeJson)
 import Data.Argonaut.Decode.Error (printJsonDecodeError)
 import Data.Argonaut.Encode (encodeJson)
 import Data.Array as A
+import Data.Bifunctor (lmap)
 import Data.Either (Either(..), either)
 import Neodoc.Unsafe (unsafeFromRight)
 import Data.Foldable (class Foldable, any, intercalate)
-import Data.List (concat, fromFoldable)
+import Data.List (List(..), concat, fromFoldable)
 import Data.Map (Map)
 import Data.Map as Map
 import Data.Maybe (Maybe(..), maybe, fromMaybe)
@@ -41,6 +42,7 @@ import Text.Wrap (dedent)
 import Neodoc.ArgKey (ArgKey, argKeyMapToString, stringMapToArgKey)
 import Neodoc.ArgParser (ArgParseResult(..))
 import Neodoc.ArgParser as ArgParser
+import Neodoc.Data.SolvedLayout (SolvedLayout)
 import Neodoc.Data.UsageLayout (UsageLayout)
 import Neodoc.Error (NeodocError(..)) as Error
 import Neodoc.Error (NeodocError)
@@ -53,7 +55,10 @@ import Neodoc.Options
 import Neodoc.Options (NeodocOptions(..))
 import Neodoc.Scanner as Scanner
 import Neodoc.Solve as Solver
+import Neodoc.Solve.Error (SolveError(..))
 import Neodoc.Spec (Spec(..))
+import Neodoc.Spec.Json
+  (solvedSpecFromJson, solvedSpecToJson, usageSpecFromJson, usageSpecToJson)
 import Neodoc.Spec.Lexer as Lexer
 import Neodoc.Spec.Parser (parseDescription, parseUsage) as Spec
 import Neodoc.Value (Value(..))
@@ -100,13 +105,27 @@ instance showOutput :: Show Output where
   show (Output          s) = "Output " <> show s
 
 
-runStringJs :: String -> Json -> Json
-runStringJs helpStr opts =
+runStringJs
+  :: String
+  -> Json
+  -> Array (Json -> Json)  -- presolve transform hooks
+  -> Array (Json -> Json)  -- postsolve transform hooks
+  -> Json
+runStringJs helpStr opts presolveFns postsolveFns =
   case decodeJson opts of
     Left err ->
       jsonSingletonObject "error" $ encodeJson (printJsonDecodeError err)
     Right (NeodocOptions neodocOptsObj) ->
-      case runString helpStr (NeodocOptions neodocOptsObj) neodocOptsObj.version of
+      let
+        presolve = fromFoldable $ (\fn spec ->
+          lmap (SolveError <<< printJsonDecodeError)
+            (usageSpecFromJson (fn (usageSpecToJson spec)))) <$> presolveFns
+        postsolve = fromFoldable $ (\fn spec ->
+          lmap (SolveError <<< printJsonDecodeError)
+            (solvedSpecFromJson (fn (solvedSpecToJson spec)))) <$> postsolveFns
+      in
+      case _runPure (Right helpStr) presolve postsolve
+            (NeodocOptions neodocOptsObj) neodocOptsObj.version of
         Left neodocError ->
           let
             mSpec     = either (const Nothing) Just (parseHelpText helpStr)
@@ -133,21 +152,23 @@ runString
   -> NeodocOptions
   -> Maybe String
   -> Either NeodocError Output
-runString help = _runPure (Right help)
+runString help = _runPure (Right help) Nil Nil
 
 runSpec
   :: Spec UsageLayout
   -> NeodocOptions
   -> Maybe String
   -> Either NeodocError Output
-runSpec spec = _runPure (Left spec)
+runSpec spec = _runPure (Left spec) Nil Nil
 
 _runPure
   :: Either (Spec UsageLayout) String
+  -> List (Spec UsageLayout  -> Either SolveError (Spec UsageLayout))
+  -> List (Spec SolvedLayout -> Either SolveError (Spec SolvedLayout))
   -> NeodocOptions
   -> Maybe String
   -> Either NeodocError Output
-_runPure input (NeodocOptions opts) mVer = do
+_runPure input presolve postsolve (NeodocOptions opts) mVer = do
   let argv = fromMaybe [] opts.argv
       env  = fromMaybe Map.empty opts.env
 
@@ -156,10 +177,10 @@ _runPure input (NeodocOptions opts) mVer = do
   inputSpec@(Spec { program, helpText }) <- do
     either pure parseHelpText input
 
-  -- 2. solve the spec
+  -- 2. solve the spec, applying the pre-/post-solve transform hooks.
   spec@(Spec { descriptions }) <- do
     Error.capture do
-      Solver.solve { smartOptions: opts.smartOptions } inputSpec
+      Solver.solve' { smartOptions: opts.smartOptions } presolve postsolve inputSpec
 
   -- 3. run the arg parser against the spec and user input
   ArgParseResult mBranch vs <- do

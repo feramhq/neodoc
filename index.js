@@ -11,11 +11,15 @@ module.exports.run = function (helpOrSpec, options = {}) {
       : (process.env || {})
     )
 
+  var transforms = options.transforms || {}
+  var presolve = Array.isArray(transforms.presolve) ? transforms.presolve : []
+  var postsolve = Array.isArray(transforms.postsolve) ? transforms.postsolve : []
+
   var result
 
   if (helpOrSpec) {
     if (typeof helpOrSpec === 'string') {
-      result = neodocLib.runStringJs(helpOrSpec)(options)
+      result = neodocLib.runStringJs(helpOrSpec)(options)(presolve)(postsolve)
     }
     else if (typeof helpOrSpec === 'object') {
       result = neodocLib.runSpecJs(helpOrSpec)(options)

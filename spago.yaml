@@ -16,6 +16,7 @@ package:
     - exceptions
     - foldable-traversable
     - foreign
+    - foreign-object
     - free
     - integers
     - lists
